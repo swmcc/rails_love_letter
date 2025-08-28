@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Loveletter" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+  <% flash.each do |key, message| %>
+    <% css =
+      case key.to_s
+      when "notice" then "bg-green-100 text-green-800 border-green-300"
+      when "alert"  then "bg-yellow-100 text-yellow-800 border-yellow-300"
+      when "error"  then "bg-red-100 text-red-800 border-red-300"
+      else "bg-gray-100 text-gray-800 border-gray-300"
+      end %>
+    <div class="container mx-auto mt-4 px-5">
+      <div class="border rounded p-3 mb-3 <%= css %>">
+        <%= message %>
+      </div>
+    </div>
+  <% end %>
+
+    <main class="container mx-auto mt-28 px-5 flex">
+      <%= yield %>
+    </main>
+  </body>
+</html>

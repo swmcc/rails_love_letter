@@ -1,0 +1,16 @@
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-2xl font-bold">Lobby</h1>
+  <div>Signed in as <strong><%= current_name %></strong></div>
+</div>
+
+
+<%= button_to "Create Game", games_path, method: :post, class: "bg-green-600 text-white px-3 py-2 rounded" %>
+
+<ul class="mt-4 space-y-2">
+  <% @games.each do |g| %>
+    <li class="p-3 bg-gray-100 rounded flex justify-between">
+      <span>Game #<%= g.id %> · Code <%= g.code %> · Players <%= g.participants.count %>/<%= g.max_players || 4 %> <%= "(started)" if g.started? %></span>
+      <%= link_to "Open", g, class: "underline" %>
+    </li>
+  <% end %>
+</ul>

@@ -1,0 +1,6 @@
+<h1 class="text-xl font-bold mb-4">Enter your name</h1>
+<%= form_with url: session_path, method: :post, local: true, class: "space-x-2" do |f| %>
+  <input name="name" class="border p-2 rounded" placeholder="Your name" />
+  <button class="bg-blue-600 text-white px-3 py-2 rounded">Continue</button>
+<% end %>
+

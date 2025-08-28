@@ -1,0 +1,20 @@
+<h1 class="text-xl font-bold mb-2">Game #<%= @game.id %> · Code <%= @game.code %></h1>
+
+<div class="p-3 bg-gray-50 rounded mb-3">
+  <strong>Players</strong>
+  <ul class="list-disc ml-6">
+    <% @game.participants.each do |p| %>
+      <li><%= p.name %> <%= "(you)" if p.session_id == current_sid %></li>
+    <% end %>
+  </ul>
+</div>
+
+<% if !@game.started? %>
+  <% if @participant.nil? %>
+    <%= button_to "Join Game", join_game_path(@game), method: :post, class: "bg-blue-600 text-white px-3 py-2 rounded" %>
+  <% end %>
+  <%= button_to "Start Game", start_game_path(@game), method: :post, class: "bg-red-600 text-white px-3 py-2 rounded", data: { turbo_confirm: "Start now?" } %>
+<% else %>
+  <!-- render the board; Turbo Streams will shine here -->
+  <p>The round has started. (Board UI goes here.)</p>
+<% end %>
