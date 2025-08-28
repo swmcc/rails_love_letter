@@ -13,20 +13,20 @@ run:
 setup:
 	@echo "$(GREEN)==> Setting up $(APP_NAME)...$(RESET)"
 	bundle install
-	bin/rails db:create
-	bin/rails db:migrate
+	bundle exec rails db:create
+	bundle exec rails db:migrate
 
 db.create:
-	bin/rails db:create
+	bundle exec rails db:create
 
 db.drop:
-	bin/rails db:drop
+	bundle exec rails db:drop
 
 db.migrate:
-	bin/rails db:migrate
+	bundle exec rails db:migrate
 
 lint:
 	bundle exec rubocop
 
 test:
-	bin/rspec
+	bundle exec rspec

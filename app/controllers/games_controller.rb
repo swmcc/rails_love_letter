@@ -22,7 +22,7 @@ class GamesController < ApplicationController
 
   def join
     game = Game.find(params[:id])
-    return redirect_to game, alert: I18n.t('flash.games.already_started') unless game.joinable?
+    return redirect_to game, alert: I18nt.t('flash.games.already_started') unless game.joinable?
 
     game.participants.find_or_create_by!(session_id: current_sid) do |p|
       p.name = current_name
@@ -35,7 +35,7 @@ class GamesController < ApplicationController
     return redirect_to game, alert: I18nt.t('flash.games.need_players') unless game.participants.size.between?(2, 4)
 
     game.start!
-    redirect_to game, notice: I18n.t('flash.games.started')
+    redirect_to game, notice: I18nt.t('flash.games.started')
   end
 
   # optional: find by 6-char code

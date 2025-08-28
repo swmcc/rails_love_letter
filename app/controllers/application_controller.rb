@@ -11,6 +11,6 @@ class ApplicationController < ActionController::Base
   def require_name!
     return if current_sid.present? && current_name.present?
 
-    redirect_to new_session_path, alert: I18n.t('flash.session.require_name')
+    redirect_to new_session_path, alert: I18n.t('flash.sessions.require_name')
   end
 end
