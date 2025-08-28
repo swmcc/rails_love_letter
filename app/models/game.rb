@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Game < ApplicationRecord
   has_many :participants, dependent: :destroy
   has_many :moves, dependent: :destroy

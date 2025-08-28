@@ -1,14 +1,11 @@
+# frozen_string_literal: true
+
 # app/controllers/games_controller.rb
 class GamesController < ApplicationController
   before_action :require_name!
 
   def index
     @games = Game.order(created_at: :desc).limit(20)
-  end
-
-  def create
-    @game = Game.create!(max_players: 4)
-    redirect_to @game
   end
 
   def show
@@ -18,9 +15,14 @@ class GamesController < ApplicationController
     # simple guard: show join button if not already joined
   end
 
+  def create
+    @game = Game.create!(max_players: 4)
+    redirect_to @game
+  end
+
   def join
     game = Game.find(params[:id])
-    return redirect_to game, alert: "Game already started." unless game.joinable?
+    return redirect_to game, alert: I18n.t('flash.games.already_started') unless game.joinable?
 
     game.participants.find_or_create_by!(session_id: current_sid) do |p|
       p.name = current_name
@@ -30,9 +32,10 @@ class GamesController < ApplicationController
 
   def start
     game = Game.find(params[:id])
-    return redirect_to game, alert: "Need 2–4 players." unless game.participants.size.between?(2,4)
+    return redirect_to game, alert: I18nt.t('flash.games.need_players') unless game.participants.size.between?(2, 4)
+
     game.start!
-    redirect_to game, notice: "Game started."
+    redirect_to game, notice: I18n.t('flash.games.started')
   end
 
   # optional: find by 6-char code
