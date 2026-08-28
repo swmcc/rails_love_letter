@@ -1,0 +1,9 @@
+# thrawn per-repo config (merged over the global runners.toml)
+
+[checks]
+# Ran in the integration worktree after merging task branches.
+commands = ["make lint", "make test"]
+
+[worktree]
+# Fresh worktrees need gems before any check can run.
+setup = "bundle install"
