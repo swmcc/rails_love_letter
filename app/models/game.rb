@@ -47,4 +47,8 @@ class Game < ApplicationRecord
   def joinable? = lobby? && participants.count < (max_players || 4)
 
   def active_participants = participants.active.by_turn_order
+
+  def last_round_winner
+    moves.where(action: 'round_end').order(id: :desc).first&.participant
+  end
 end

@@ -28,7 +28,9 @@ class PlayCard
       discard_from_hand!
       outcome = @no_effect ? { no_effect: true } : resolve_effect
       move = record_move(outcome)
-      Result.new(move: move, turn_signal: AdvanceTurn.call(@game))
+      signal = AdvanceTurn.call(@game)
+      EndRound.call(@game, reason: signal) unless signal == :drew
+      Result.new(move: move, turn_signal: signal)
     end
   end
 
