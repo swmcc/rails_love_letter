@@ -8,3 +8,4 @@ en:
       already_started: "Game already started."
       need_players: "Need 2-4 players."
       started: "Game started."
+      cannot_start: "Unable to start the round."

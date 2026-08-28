@@ -34,8 +34,10 @@ class GamesController < ApplicationController
     game = Game.find(params[:id])
     return redirect_to game, alert: I18n.t('flash.games.need_players') unless game.participants.size.between?(2, 4)
 
-    game.start!
+    StartRound.call(game)
     redirect_to game, notice: I18n.t('flash.games.started')
+  rescue StartRound::Error
+    redirect_to game, alert: I18n.t('flash.games.cannot_start')
   end
 
   # optional: find by 6-char code
