@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Participant, type: :model do # rubocop:disable Metrics/BlockLength
+RSpec.describe Participant, type: :model do
   let(:game) { Game.create! }
 
   it 'requires a session ID' do
@@ -39,7 +39,7 @@ RSpec.describe Participant, type: :model do # rubocop:disable Metrics/BlockLengt
     described_class.create!(game:, name: 'Alice', session_id: 'session-1')
 
     expect do
-      described_class.insert!({ # rubocop:disable Rails/SkipsModelValidations -- exercises the database constraint
+      described_class.insert!({ # -- exercises the database constraint
                                 game_id: game.id,
                                 name: 'Alice again',
                                 session_id: 'session-1',
@@ -48,4 +48,4 @@ RSpec.describe Participant, type: :model do # rubocop:disable Metrics/BlockLengt
                               })
     end.to raise_error(ActiveRecord::RecordNotUnique)
   end
-end # rubocop:enable Metrics/BlockLength
+end

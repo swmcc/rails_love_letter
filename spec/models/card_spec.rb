@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Card, type: :model do # rubocop:disable Metrics/BlockLength
+RSpec.describe Card, type: :model do
   subject(:cards) { described_class.all }
 
   let(:expected_cards) do
@@ -59,4 +59,4 @@ RSpec.describe Card, type: :model do # rubocop:disable Metrics/BlockLength
     expect(described_class.deck).to be_frozen
     expect(cards).to all(be_frozen)
   end
-end # rubocop:enable Metrics/BlockLength
+end
