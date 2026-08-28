@@ -19,6 +19,15 @@ class Game < ApplicationRecord
 
   before_validation(on: :create) { self.code ||= SecureRandom.alphanumeric(6).upcase }
 
+  # Touches from participants/moves funnel through here, so every game
+  # change refreshes the board for connected players and the lobby list.
+  after_commit :broadcast_refreshes
+
+  def broadcast_refreshes
+    broadcast_refresh_to self
+    broadcast_refresh_to 'lobby'
+  end
+
   validates :code, uniqueness: true
 
   def self.cleanup_stale!(cutoff: 24.hours.ago)
@@ -47,6 +56,8 @@ class Game < ApplicationRecord
   def joinable? = lobby? && participants.count < (max_players || 4)
 
   def active_participants = participants.active.by_turn_order
+
+  def host = participants.order(:id).first
 
   def last_round_winner
     moves.where(action: 'round_end').order(id: :desc).first&.participant

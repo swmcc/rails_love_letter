@@ -1,0 +1,36 @@
+<%# One playable card: a self-contained form that works without JavaScript;
+    the card-play Stimulus controller only progressively reveals the pickers. %>
+<% card_def = Card[card] %>
+<% targets = targetable_players(game, me, card) %>
+<%= form_with url: game_moves_path(game), method: :post,
+              class: 'w-40 p-3 rounded-lg border-2 border-indigo-300 bg-indigo-50',
+              data: { controller: 'card-play' } do |f| %>
+  <%= f.hidden_field :card, value: card %>
+  <div class="text-center">
+    <div class="text-2xl font-bold text-indigo-700"><%= card_def.value %></div>
+    <div class="font-semibold"><%= card_def.name %></div>
+    <p class="text-xs text-gray-600 mt-1"><%= card_def.effect %></p>
+  </div>
+
+  <% if card_def.requires_target? && targets.any? %>
+    <label class="block text-xs mt-2 text-gray-700">Target
+      <%= f.select :target_id,
+                   targets.map { |t| ["#{t.name}#{' (you)' if t == me}", t.id] },
+                   { include_blank: 'Choose a player' },
+                   class: 'mt-1 w-full border rounded p-1 text-sm', data: { card_play_target: 'target' } %>
+    </label>
+  <% end %>
+
+  <% if card_def.requires_guess? && targets.any? %>
+    <label class="block text-xs mt-2 text-gray-700">Guess
+      <%= f.select :guess,
+                   Card.all.reject { |c| c.key == :guard }.map { |c| [card_label(c.key), c.key] },
+                   { include_blank: 'Name a card' },
+                   class: 'mt-1 w-full border rounded p-1 text-sm', data: { card_play_target: 'guess' } %>
+    </label>
+  <% end %>
+
+  <button class="mt-2 w-full bg-indigo-600 text-white rounded px-2 py-1 text-sm hover:bg-indigo-700">
+    Play<%= ' with no effect' if card_def.requires_target? && targets.empty? %>
+  </button>
+<% end %>

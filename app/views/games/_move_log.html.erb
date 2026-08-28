@@ -1,0 +1,13 @@
+<section id="move_log" class="p-3 bg-gray-50 rounded-lg">
+  <h2 class="font-semibold mb-2">Move log</h2>
+  <% moves = game.moves.includes(:participant).order(id: :desc).limit(15) %>
+  <% if moves.any? %>
+    <ol class="space-y-1 text-sm">
+      <% moves.each do |move| %>
+        <li><%= describe_move(move, viewer: me) %></li>
+      <% end %>
+    </ol>
+  <% else %>
+    <p class="text-sm text-gray-400">No moves yet.</p>
+  <% end %>
+</section>

@@ -1,0 +1,26 @@
+<section id="your_hand" class="p-3 rounded-lg border bg-white">
+  <h2 class="font-semibold mb-2">Your hand</h2>
+  <% if me.eliminated? %>
+    <p class="text-sm text-gray-500">You are out of this round.</p>
+  <% elsif me.hand.empty? %>
+    <p class="text-sm text-gray-400">Waiting to be dealt in…</p>
+  <% else %>
+    <div class="flex flex-wrap gap-3">
+      <% me.hand.each_with_index do |card, index| %>
+        <% my_turn = game.in_round? && game.current_participant == me && me.hand.size == 2 %>
+        <% if my_turn %>
+          <%= render 'games/play_form', game:, me:, card:, index: %>
+        <% else %>
+          <div class="w-32 p-3 rounded-lg border-2 border-indigo-200 bg-indigo-50 text-center">
+            <div class="text-2xl font-bold text-indigo-700"><%= Card[card].value %></div>
+            <div class="font-semibold"><%= Card[card].name %></div>
+            <p class="text-xs text-gray-600 mt-1"><%= Card[card].effect %></p>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+    <% unless game.current_participant == me %>
+      <p class="text-xs text-gray-500 mt-2">Waiting for <%= game.current_participant&.name %>…</p>
+    <% end %>
+  <% end %>
+</section>

@@ -9,3 +9,7 @@ en:
       need_players: "Need 2-4 players."
       started: "Game started."
       cannot_start: "Unable to start the round."
+      not_your_start: "Only the host (or the round winner) can start."
+      not_finished: "The game is not over yet."
+      rematch: "Rematch! Everyone is back in."
+      unknown_code: "No game with that code."

@@ -1,0 +1,36 @@
+<div id="board" class="space-y-4">
+  <div class="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+    <div>
+      <span class="font-semibold">Round <%= game.round_number %></span>
+      <% if game.in_round? && game.current_participant %>
+        · <span class="text-amber-700">It's <%= game.current_participant == me ? 'your' : "#{game.current_participant.name}'s" %> turn</span>
+      <% end %>
+    </div>
+    <div class="text-sm text-gray-600">
+      Deck: <strong><%= game.deck.size %></strong> card<%= 's' unless game.deck.size == 1 %>
+      <% if game.face_up_cards.any? %>
+        · Removed face up:
+        <% game.face_up_cards.each do |card| %>
+          <span class="px-1.5 py-0.5 rounded border bg-white text-xs"><%= card_label(card) %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if game.round_over? || game.over? %>
+    <%= render 'games/round_over', game:, me: %>
+  <% end %>
+
+  <div class="grid gap-3 sm:grid-cols-2">
+    <% game.participants.by_turn_order.each do |player| %>
+      <% next if player == me %>
+      <%= render 'games/opponent', game:, me:, player: %>
+    <% end %>
+  </div>
+
+  <% if me %>
+    <%= render 'games/hand', game:, me: %>
+  <% end %>
+
+  <%= render 'games/move_log', game:, me: %>
+</div>

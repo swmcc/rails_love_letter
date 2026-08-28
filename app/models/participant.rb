@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Participant < ApplicationRecord
-  belongs_to :game
+  belongs_to :game, touch: true
 
   validates :name, :session_id, presence: true
   validates :session_id, uniqueness: { scope: :game_id }

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     member do
       post :join
       post :start
+      post :rematch
     end
     collection do
       get :code, to: 'games#find_by_code' # optional: join via 6-char code

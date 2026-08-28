@@ -1,0 +1,48 @@
+<% winner = game.last_round_winner %>
+<% final = game.over? %>
+<% round_end = game.moves.where(action: 'round_end').order(id: :desc).first %>
+<section id="round_over" class="p-4 rounded-lg border-2 <%= final ? 'border-rose-300 bg-rose-50' : 'border-emerald-300 bg-emerald-50' %>">
+  <h2 class="text-lg font-bold">
+    <%= final ? '🏆 Game over' : "Round #{round_end&.payload&.dig('round') || game.round_number} over" %>
+  </h2>
+  <% if winner %>
+    <p class="mt-1">
+      <strong><%= winner == me ? 'You' : winner.name %></strong>
+      <%= final ? 'won the game!' : 'won the round and gained a favour token.' %>
+      <% if round_end&.payload&.dig('reason') == 'deck_empty' %>
+        (The deck ran out — highest card wins.)
+      <% end %>
+    </p>
+    <% if round_end && round_end.payload['hands'].present? %>
+      <div class="mt-2 flex flex-wrap gap-2 text-sm">
+        <% round_end.payload['hands'].each do |pid, card| %>
+          <span class="px-2 py-1 rounded border bg-white">
+            <%= game.participants.find(pid.to_i).name %>: <%= card_label(card) %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="mt-3 flex flex-wrap gap-2 text-sm">
+    <% game.participants.by_turn_order.each do |p| %>
+      <span class="px-2 py-1 rounded bg-white border <%= 'font-bold' if p == winner %>">
+        <%= p.name %>: ❤ <%= p.tokens %>
+      </span>
+    <% end %>
+    <span class="px-2 py-1 text-gray-600">First to <%= EndRound::TOKENS_TO_WIN[game.participants.count] %> wins</span>
+  </div>
+
+  <div class="mt-3 flex gap-2">
+    <% if final %>
+      <%= button_to 'Rematch', rematch_game_path(game), method: :post,
+                    class: 'bg-emerald-600 text-white px-3 py-2 rounded hover:bg-emerald-700' %>
+      <%= link_to 'Back to lobby', games_path, class: 'px-3 py-2 rounded border bg-white hover:bg-gray-50' %>
+    <% elsif winner == me %>
+      <%= button_to 'Start next round', start_game_path(game), method: :post,
+                    class: 'bg-emerald-600 text-white px-3 py-2 rounded hover:bg-emerald-700' %>
+    <% else %>
+      <p class="text-sm text-gray-600">Waiting for <%= winner&.name %> to start the next round…</p>
+    <% end %>
+  </div>
+</section>

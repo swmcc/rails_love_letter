@@ -1,0 +1,25 @@
+<div id="<%= dom_id(player) %>" class="p-3 rounded-lg border <%= player.eliminated? ? 'bg-gray-100 opacity-60' : 'bg-white' %> <%= 'ring-2 ring-amber-400' if game.current_participant == player %>">
+  <div class="flex items-center justify-between gap-2">
+    <span class="font-semibold"><%= player.name %><%= ' (you)' if player == me %></span>
+    <span class="text-sm text-rose-600" title="Favour tokens">❤ <%= player.tokens %></span>
+  </div>
+  <div class="text-xs mt-1 space-x-1">
+    <% if player.eliminated? %>
+      <span class="px-1.5 py-0.5 rounded bg-gray-300 text-gray-700">out</span>
+    <% elsif player.protected_until_turn? %>
+      <span class="px-1.5 py-0.5 rounded bg-sky-100 text-sky-800">protected</span>
+    <% end %>
+    <% if game.current_participant == player && game.in_round? %>
+      <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">their turn</span>
+    <% end %>
+  </div>
+  <div class="mt-2 flex flex-wrap gap-1">
+    <% if player.discards.any? %>
+      <% player.discards.each do |card| %>
+        <span class="text-xs px-1.5 py-0.5 rounded border bg-gray-50"><%= card_label(card) %></span>
+      <% end %>
+    <% else %>
+      <span class="text-xs text-gray-400">no discards yet</span>
+    <% end %>
+  </div>
+</div>

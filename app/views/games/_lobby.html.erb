@@ -1,0 +1,30 @@
+<div class="p-4 rounded-lg border bg-white space-y-3">
+  <div>
+    <h2 class="font-semibold">Players (<%= game.participants.count %>/<%= game.max_players || 4 %>)</h2>
+    <ul class="mt-1 list-disc ml-6">
+      <% game.participants.order(:id).each do |p| %>
+        <li>
+          <%= p.name %>
+          <%= '(you)' if p == me %>
+          <%= tag.span 'host', class: 'text-xs px-1.5 py-0.5 rounded bg-purple-100 text-purple-800' if p == game.host %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <p class="text-sm text-gray-600">Share the code above — friends can join from the lobby until the game starts.</p>
+
+  <div class="flex gap-2">
+    <% if me.nil? && game.joinable? %>
+      <%= button_to 'Join Game', join_game_path(game), method: :post,
+                    class: 'bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700' %>
+    <% end %>
+    <% if me && me == game.host %>
+      <%= button_to 'Start Game', start_game_path(game), method: :post,
+                    class: 'bg-emerald-600 text-white px-3 py-2 rounded hover:bg-emerald-700',
+                    data: { turbo_confirm: 'Start now? No one else can join afterwards.' } %>
+    <% elsif me %>
+      <p class="text-sm text-gray-500 self-center">Waiting for <%= game.host&.name %> to start…</p>
+    <% end %>
+  </div>
+</div>

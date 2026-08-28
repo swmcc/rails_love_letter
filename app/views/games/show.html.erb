@@ -1,20 +1,19 @@
-<h1 class="text-xl font-bold mb-2">Game #<%= @game.id %> · Code <%= @game.code %></h1>
+<%= turbo_stream_from @game %>
 
-<div class="p-3 bg-gray-50 rounded mb-3">
-  <strong>Players</strong>
-  <ul class="list-disc ml-6">
-    <% @game.participants.each do |p| %>
-      <li><%= p.name %> <%= "(you)" if p.session_id == current_sid %></li>
-    <% end %>
-  </ul>
-</div>
+<div class="w-full max-w-3xl mx-auto">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-xl font-bold">Love Letter · Game #<%= @game.id %></h1>
+    <div class="flex items-center gap-2 text-sm" data-controller="clipboard">
+      <span class="text-gray-600">Code</span>
+      <code class="px-2 py-1 rounded bg-gray-100 font-mono font-bold tracking-widest" data-clipboard-target="source"><%= @game.code %></code>
+      <button type="button" class="px-2 py-1 rounded border bg-white hover:bg-gray-50"
+              data-action="clipboard#copy" data-clipboard-target="button">Copy</button>
+    </div>
+  </div>
 
-<% if !@game.started? %>
-  <% if @participant.nil? %>
-    <%= button_to "Join Game", join_game_path(@game), method: :post, class: "bg-blue-600 text-white px-3 py-2 rounded" %>
+  <% if @game.lobby? %>
+    <%= render 'games/lobby', game: @game, me: @participant %>
+  <% else %>
+    <%= render 'games/board', game: @game, me: @participant %>
   <% end %>
-  <%= button_to "Start Game", start_game_path(@game), method: :post, class: "bg-red-600 text-white px-3 py-2 rounded", data: { turbo_confirm: "Start now?" } %>
-<% else %>
-  <!-- render the board; Turbo Streams will shine here -->
-  <p>The round has started. (Board UI goes here.)</p>
-<% end %>
+</div>
