@@ -17,20 +17,21 @@ RSpec.describe StartRound do
 
     expect(total.sort).to eq(Card.deck.map { |c| c.key.to_s }.sort)
     expect(game.face_up_cards).to be_empty
-    expect(hands.size).to eq(3)
+    expect(hands.size).to eq(4) # one each plus the starter's opening draw
   end
 
   it 'removes three extra face-up cards in a two-player game' do
     game = described_class.call(build_game(players: 2))
 
     expect(game.face_up_cards.size).to eq(3)
-    expect(game.deck.size).to eq(16 - 1 - 3 - 2)
+    expect(game.deck.size).to eq(16 - 1 - 3 - 2 - 1)
   end
 
-  it 'deals exactly one card to every player and starts the round' do
+  it 'deals one card each, plus the opening draw, and starts the round' do
     game = described_class.call(build_game(players: 4))
 
-    expect(game.participants.map { |p| p.hand.size }).to all(eq(1))
+    expect(game.participants.map { |p| p.hand.size }.sort).to eq([1, 1, 1, 2])
+    expect(game.current_participant.hand.size).to eq(2)
     expect(game).to be_in_round
     expect(game.round_number).to eq(1)
     expect(game.current_participant).to eq(game.participants.by_turn_order.first)

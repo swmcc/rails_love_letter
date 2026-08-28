@@ -18,6 +18,7 @@ class StartRound
       validate!
       deal_new_round!
       @game.transition_to!(:in_round)
+      BeginTurn.call(@game)
     end
     @game
   end
