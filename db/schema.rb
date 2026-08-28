@@ -10,19 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_28_120056) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_28_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "games", force: :cascade do |t|
+    t.string "burned_card"
     t.string "code"
     t.datetime "created_at", null: false
+    t.bigint "current_participant_id"
+    t.jsonb "deck", default: [], null: false
+    t.jsonb "face_up_cards", default: [], null: false
     t.datetime "finished_at"
     t.integer "max_players"
+    t.integer "round_number", default: 0, null: false
     t.datetime "started_at"
+    t.string "state", default: "lobby", null: false
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_games_on_code", unique: true
+    t.index ["current_participant_id"], name: "index_games_on_current_participant_id"
     t.index ["finished_at"], name: "index_games_on_finished_at"
+    t.index ["state"], name: "index_games_on_state"
   end
 
   create_table "moves", force: :cascade do |t|
@@ -38,17 +46,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_120056) do
 
   create_table "participants", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.jsonb "discards", default: [], null: false
     t.boolean "eliminated", default: false
     t.bigint "game_id", null: false
+    t.jsonb "hand", default: [], null: false
     t.string "name", null: false
+    t.boolean "protected_until_turn", default: false, null: false
     t.string "session_id", null: false
     t.integer "tokens", default: 0
+    t.integer "turn_order"
     t.datetime "updated_at", null: false
     t.index ["game_id", "session_id"], name: "index_participants_on_game_id_and_session_id", unique: true
     t.index ["game_id"], name: "index_participants_on_game_id"
     t.index ["session_id"], name: "index_participants_on_session_id"
   end
 
+  add_foreign_key "games", "participants", column: "current_participant_id", on_delete: :nullify
   add_foreign_key "moves", "games"
   add_foreign_key "moves", "participants"
   add_foreign_key "participants", "games"

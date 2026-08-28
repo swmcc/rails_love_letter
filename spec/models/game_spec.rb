@@ -17,6 +17,64 @@ RSpec.describe Game, type: :model do
     expect(duplicate.errors[:code]).to include('has already been taken')
   end
 
+  describe 'state machine' do
+    it 'starts in the lobby state' do
+      expect(Game.create!).to be_lobby
+    end
+
+    it 'moves lobby → in_round and stamps started_at' do
+      game = Game.create!
+
+      game.transition_to!(:in_round)
+
+      expect(game).to be_in_round
+      expect(game.started_at).to be_present
+    end
+
+    it 'moves in_round → round_over → in_round for the next round' do
+      game = Game.create!(state: 'in_round')
+
+      game.transition_to!(:round_over)
+      game.transition_to!(:in_round)
+
+      expect(game).to be_in_round
+    end
+
+    it 'stamps finished_at when the game ends' do
+      game = Game.create!(state: 'in_round')
+
+      game.transition_to!(:over)
+
+      expect(game).to be_over
+      expect(game.finished_at).to be_present
+    end
+
+    it 'rejects invalid transitions' do
+      game = Game.create!
+
+      expect { game.transition_to!(:over) }.to raise_error(Game::InvalidTransition)
+      expect { game.transition_to!(:round_over) }.to raise_error(Game::InvalidTransition)
+    end
+
+    it 'rejects unknown states' do
+      expect { Game.create!(state: 'limbo') }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
+
+  describe '#joinable?' do
+    it 'is joinable only in the lobby and under the player cap' do
+      game = Game.create!(max_players: 2)
+      expect(game).to be_joinable
+
+      game.participants.create!(name: 'A', session_id: 's1')
+      game.participants.create!(name: 'B', session_id: 's2')
+      expect(game).not_to be_joinable
+
+      started = Game.create!(state: 'in_round')
+      expect(started).not_to be_joinable
+    end
+  end
+
   describe '.cleanup_stale!' do
     let(:cutoff) { 24.hours.ago }
 

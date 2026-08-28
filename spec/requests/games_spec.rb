@@ -9,7 +9,7 @@ RSpec.describe 'Games', type: :request do
 
   describe 'POST /games/:id/join' do
     it 'renders an alert when the game has already started' do
-      game = Game.create!(max_players: 4, started_at: Time.current)
+      game = Game.create!(max_players: 4, state: 'in_round', started_at: Time.current)
 
       post join_game_path(game)
       follow_redirect!
