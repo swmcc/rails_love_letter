@@ -35,10 +35,20 @@ bin/rspec
 
 RSpec covers models and request flows (sessions, games, joining, etc.).
 
+## Cleaning Up Games
+
+Delete finished games and games that have not been updated for more than 24 hours:
+
+```sh
+bin/rails games:cleanup
+```
+
+Run this command periodically from your scheduler in production. Deleting a game also deletes its participants and moves.
+
 ## Development Notes
 - Identity is stored in the Rails session (session[:sid] + session[:pname]). No permanent user records exist.
 - Game state (Game, Participant, Move) is persisted in the database so Turbo Streams can broadcast updates.
-- Old games can be cleaned up periodically with a background job or rake task.
+- Finished and stale games can be cleaned up periodically with `bin/rails games:cleanup`.
 
 ## Roadmap
 - Implement full Love Letter card rules (Guard, Priest, Baron, etc.).
