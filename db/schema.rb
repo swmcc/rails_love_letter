@@ -10,17 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_28_134411) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_28_120056) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "games", force: :cascade do |t|
     t.string "code"
     t.datetime "started_at"
+    t.datetime "finished_at"
     t.integer "max_players"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_games_on_code"
+    t.index ["finished_at"], name: "index_games_on_finished_at"
   end
 
   create_table "moves", force: :cascade do |t|

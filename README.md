@@ -23,6 +23,9 @@ bin/dev
 
 Visit http://localhost:3000
 
+Clean up games finished or untouched for more than 24 hours:
+bin/rails games:cleanup
+
 ## How It Works
 1. Enter Name – When you visit the app, you’re asked for a name.
 2. Lobby – You’ll see a list of active games and can create a new one.
@@ -38,7 +41,7 @@ RSpec covers models and request flows (sessions, games, joining, etc.).
 ## Development Notes
 - Identity is stored in the Rails session (session[:sid] + session[:pname]). No permanent user records exist.
 - Game state (Game, Participant, Move) is persisted in the database so Turbo Streams can broadcast updates.
-- Old games can be cleaned up periodically with a background job or rake task.
+- Old games can be cleaned up periodically with `bin/rails games:cleanup`.
 
 ## Roadmap
 - Implement full Love Letter card rules (Guard, Priest, Baron, etc.).
