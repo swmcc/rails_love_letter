@@ -2,5 +2,7 @@
 
 class Participant < ApplicationRecord
   belongs_to :game
-  validates :name, presence: true
+
+  validates :name, :session_id, presence: true
+  validates :session_id, uniqueness: { scope: :game_id }
 end
