@@ -1,22 +1,14 @@
 # frozen_string_literal: true
 
-# Registry mapping card keys to effect resolvers. Resolvers are callables
-# receiving (game:, actor:, target:, guess:) and returning an outcome hash
-# that is stored on the Move's payload. Cards without a registered resolver
-# discard with no effect.
+# Dispatches a played card to its effect resolver (CardEffects::Guard etc.).
+# Resolvers receive (game:, actor:, target:, guess:) and return an outcome
+# hash stored on the Move's payload. Cards without a resolver discard with
+# no effect.
 module CardEffects
-  @resolvers = {}
+  def self.resolve(card:, game:, actor:, target: nil, guess: nil)
+    name = card.key.to_s.camelize
+    return {} unless const_defined?(name, false)
 
-  class << self
-    def register(key, resolver)
-      @resolvers[key.to_sym] = resolver
-    end
-
-    def resolve(card:, game:, actor:, target: nil, guess: nil)
-      resolver = @resolvers[card.key]
-      return {} unless resolver
-
-      resolver.call(game: game, actor: actor, target: target, guess: guess)
-    end
+    const_get(name, false).call(game: game, actor: actor, target: target, guess: guess)
   end
 end
